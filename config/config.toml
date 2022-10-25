@@ -1,0 +1,43 @@
+[app]
+name = "xxx"
+port = 8080
+debug = true
+
+[database]
+[database.default]
+driver = "mysql"
+host = "127.0.0.1"
+port = 3306
+username = "root"
+password = "root"
+name = "opensips"
+prefix = ""
+maxIdleConn = 10
+maxOpenConn = 20
+connMaxLifeTime = 100
+
+[database.pro]
+driver = "mysql"
+host = "127.0.0.1"
+port = 3306
+username = "root"
+password = "root"
+name = "opensips"
+prefix = ""
+maxIdleConn = 10
+maxOpenConn = 20
+connMaxLifeTime = 100
+
+[redis]
+host = "127.0.0.1"
+port = 6379
+Password = ""
+
+[logger]
+path = "storage/log"
+file = "app.log"
+maxSize = 100
+maxBackups = 30
+maxAge = 7
+compress = true
+level = "debug"
