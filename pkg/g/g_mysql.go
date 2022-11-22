@@ -1,10 +1,10 @@
 package g
 
 import (
-	"github.com/github-muzilong/go-toolkit/mysql"
 	"gorm.io/gorm"
 
-	"github.com/github-muzilong/go-gin-example/config"
+	"github.com/muzi-long/go-gin-example/config"
+	"github.com/muzi-long/go-gin-example/pkg/mysql"
 )
 
 var gDB *gorm.DB

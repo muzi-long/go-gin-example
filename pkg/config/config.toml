@@ -1,7 +1,6 @@
 [app]
 name = "xxx"
 port = 8080
-debug = true
 
 [database]
 [database.default]
@@ -35,9 +34,5 @@ Password = ""
 
 [logger]
 path = "storage/log"
-file = "2006-01-02.log"
-maxSize = 100
-maxBackups = 30
-maxAge = 7
-compress = true
-level = "debug"
+file = "app.log"
+level = "warn"

@@ -1,8 +1,8 @@
 package bootstrap
 
 import (
-	"github.com/github-muzilong/go-gin-example/pkg/g"
-	"github.com/github-muzilong/go-gin-example/route"
+	"github.com/muzi-long/go-gin-example/pkg/g"
+	"github.com/muzi-long/go-gin-example/route"
 )
 
 // Run app运行需要加载的启动项

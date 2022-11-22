@@ -5,9 +5,8 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	myRedis "github.com/github-muzilong/go-toolkit/redis"
-
-	"github.com/github-muzilong/go-gin-example/config"
+	"github.com/muzi-long/go-gin-example/config"
+	myRedis "github.com/muzi-long/go-gin-example/pkg/redis"
 )
 
 var gRedis *redis.Client

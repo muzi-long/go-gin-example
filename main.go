@@ -3,13 +3,12 @@ package main
 import (
 	"flag"
 
-	"github.com/github-muzilong/go-gin-example/bootstrap"
+	"github.com/muzi-long/go-gin-example/bootstrap"
 )
 
-var configFile string
+var configFile = flag.String("config", "config/config.toml", "the config file")
 
 func main() {
-	flag.StringVar(&configFile, "config", "config/config.toml", "the config file")
 	flag.Parse()
-	bootstrap.Run(configFile)
+	bootstrap.Run(*configFile)
 }

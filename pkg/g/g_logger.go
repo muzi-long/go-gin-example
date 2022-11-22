@@ -1,19 +1,25 @@
 package g
 
 import (
-	"github.com/github-muzilong/go-toolkit/logger"
+	"time"
+
 	"go.uber.org/zap"
 
-	"github.com/github-muzilong/go-gin-example/config"
+	"github.com/muzi-long/go-gin-example/config"
+	"github.com/muzi-long/go-gin-example/pkg/logger"
 )
 
 var gLogger *zap.Logger
 
 func InitLogger(c *config.Config) {
 	cfg := c.Logger
+	fileName := cfg.File
+	if cfg.File == "2006-01-02.log" {
+		fileName = time.Now().Format("2006-01-02") + ".log"
+	}
 	lCfg := &logger.Config{
 		Path:       cfg.Path,
-		FileName:   cfg.File,
+		FileName:   fileName,
 		MaxSize:    cfg.MaxSize,
 		MaxBackups: cfg.MaxBackups,
 		MaxAge:     cfg.MaxAge,

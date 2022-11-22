@@ -1,9 +1,9 @@
 package g
 
 import (
-	"github.com/github-muzilong/go-toolkit/config"
+	"github.com/muzi-long/go-gin-example/pkg/config"
 
-	c "github.com/github-muzilong/go-gin-example/config"
+	c "github.com/muzi-long/go-gin-example/config"
 )
 
 var gConfig = new(c.Config)

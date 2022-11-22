@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"github.com/github-muzilong/go-gin-example/config"
+	"github.com/muzi-long/go-gin-example/config"
 )
 
 func Config() *config.Config {
