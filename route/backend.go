@@ -12,11 +12,11 @@ func backendRoute(app *gin.Engine) {
 	r := app.Group("/admin/")
 	{
 		// 登录
-		r.POST("login", controller.User.Login())
+		r.POST("login", controller.User.Login)
 
 		// 注销，需要认证
 		auth := r.Use(middleware.Auth())
-		auth.GET("logout", controller.User.Login())
+		auth.GET("logout", controller.User.Login)
 	}
 
 }
