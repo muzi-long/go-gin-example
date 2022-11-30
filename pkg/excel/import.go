@@ -13,6 +13,7 @@ func Import(file string) ([][]string, error) {
 	defer func() {
 		_ = f.Close()
 	}()
-	// Get all the rows in the Sheet1.
+	// 数据量大时，使用迭代 if rows.Next() { fmt.Println(rows.Columns()) }
+	// rows, err := f.Rows()
 	return f.GetRows("Sheet1")
 }
