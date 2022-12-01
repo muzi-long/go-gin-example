@@ -14,6 +14,7 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/spf13/viper v1.13.0
 	github.com/streadway/amqp v1.0.0
+	github.com/stretchr/testify v1.8.0
 	github.com/xuri/excelize/v2 v2.6.1
 	go.uber.org/zap v1.23.0
 	golang.org/x/net v0.0.0-20220927171203-f486391704dc
@@ -61,6 +62,7 @@ require (
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.5 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/richardlehane/mscfb v1.0.4 // indirect
 	github.com/richardlehane/msoleps v1.0.3 // indirect

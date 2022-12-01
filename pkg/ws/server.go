@@ -1,6 +1,8 @@
 package ws
 
 import (
+	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,8 +10,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/gorilla/websocket"
 )
+
+const (
+	MsgChannel = "websocket:channel"
+)
+
+var ctx = context.TODO()
 
 type Server struct {
 	Port    int    // 运行端口
@@ -23,12 +32,17 @@ type Server struct {
 		mu   sync.Mutex
 		data map[*websocket.Conn]string
 	}
+	redisClient *redis.ClusterClient // 引入redis是为了支持多节点
 }
 
-func NewServer(port int, url string) *Server {
+func NewServer(cfg *Config) *Server {
+	rdb := redis.NewClusterClient(&redis.ClusterOptions{
+		Addrs:    cfg.Address,
+		Password: cfg.Password,
+	})
 	return &Server{
-		Port: port,
-		Url:  url,
+		Port: cfg.Port,
+		Url:  cfg.Url,
 		upgrade: websocket.Upgrader{
 			CheckOrigin: func(r *http.Request) bool {
 				return true
@@ -42,6 +56,7 @@ func NewServer(port int, url string) *Server {
 			mu   sync.Mutex
 			data map[*websocket.Conn]string
 		}{mu: sync.Mutex{}, data: make(map[*websocket.Conn]string)},
+		redisClient: rdb,
 	}
 }
 
@@ -64,14 +79,40 @@ func (s *Server) Run() {
 		go s.handleConnClose(conn)
 	})
 	http.HandleFunc(pushUrl, func(w http.ResponseWriter, r *http.Request) {
-		to := r.URL.Query().Get("to")
-		content := r.URL.Query().Get("content")
-		s.SendToClient(to, []byte(content))
+		// 将要推送的消息通过redis发布
+		msg := Msg{
+			To:      r.URL.Query().Get("to"),
+			Content: r.URL.Query().Get("content"),
+		}
+		encode, err := msg.Encode()
+		if err != nil {
+			return
+		}
+		s.redisClient.Publish(ctx, MsgChannel, encode)
+		// 返回状态码
 		w.WriteHeader(http.StatusOK)
 	})
+	// 订阅消息进行推送
+	go s.SubscribeMsg()
 	err := http.ListenAndServe(fmt.Sprintf("0.0.0.0:%d", s.Port), nil)
 	if err != nil {
 		panic(err)
+	}
+}
+
+func (s *Server) SubscribeMsg() {
+	p := s.redisClient.Subscribe(ctx, MsgChannel)
+	for {
+		message, err := p.ReceiveMessage(ctx)
+		if err != nil {
+			continue
+		}
+		msg := new(Msg)
+		err = json.Unmarshal([]byte(message.Payload), msg)
+		if err != nil {
+			continue
+		}
+		s.SendToClient(msg.To, []byte(msg.Content))
 	}
 }
 
@@ -85,13 +126,15 @@ func (s *Server) On(event string, f func(conn *websocket.Conn, data []byte)) {
 
 // 收到客户端连接建立时
 func (s *Server) handleConnOpen(conn *websocket.Conn, data []byte) {
+	// 将连接保存
+	if len(data) > 0 {
+		s.cons.mu.Lock()
+		s.cons.data[conn] = string(data)
+		s.cons.mu.Unlock()
+	}
+	// 调用设置的回调
 	s.events.mu.Lock()
 	if f, ok := s.events.data["open"]; ok {
-		if len(data) > 0 {
-			s.cons.mu.Lock()
-			s.cons.data[conn] = string(data)
-			s.cons.mu.Unlock()
-		}
 		f(conn, data)
 	}
 	s.events.mu.Unlock()
